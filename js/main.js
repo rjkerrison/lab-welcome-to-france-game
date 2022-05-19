@@ -2,11 +2,19 @@ class GameBoard {
   constructor(width, height) {
     this.width = width
     this.height = height
-    this.element = null
+    this.element = document.querySelector('.grid')
     this.cells = this._createCells()
   }
   _createCells() {
-    // iteration 1
+    const cells = []
+    for (let i = 0; i < 100; i++) {
+      const cell = document.createElement('div')
+      cell.classList.add('cell')
+      cell.dataset.index = i
+      this.element.appendChild(cell)
+      cells.push(cell)
+    }
+    return cells
   }
 }
 
@@ -29,12 +37,15 @@ function getRandomSelection(n, array) {
 }
 
 const inventory = {
-  element: null,
+  element: document.querySelector('.inventory'),
   add() {
-    // iteration 3
+    const div = document.createElement('div')
+    div.classList.add('item')
+    this.element.appendChild(div)
+    return div
   },
   clear() {
-    // iteration 3 (reset behaviour)
+    this.element.innerHTML = ''
   },
 }
 
@@ -45,13 +56,19 @@ class Collectible {
     this.isCollected = false
   }
   hide() {
-    // reset behaviour
+    if (!this.cell) {
+      return
+    }
+    this.cell.classList.remove(this.className)
   }
   collect() {
-    // iteration 4
+    this.hide()
+    this.cell = inventory.add()
+    this.isCollected = true
+    this.display()
   }
   display() {
-    // iteration 2
+    this.cell.classList.add(this.className)
   }
 }
 
@@ -65,32 +82,80 @@ const collectibles = [
 ].map((c) => new Collectible(c))
 
 function distributeCollectibles() {
-  // iteration 2
+  const cells = getRandomSelection(collectibles.length, board.cells)
+  collectibles.forEach((collectible, i) => {
+    collectible.cell = cells[i]
+    collectible.display()
+    collectible.isCollected = false
+  })
 }
 
 function getRandomUnoccupiedCell() {
-  // iteration 3
+  const occupiedCells = collectibles.map((x) => x.cell)
+  const unoccupiedCells = board.cells.filter((x) => !occupiedCells.includes(x))
+  const cells = getRandomSelection(1, unoccupiedCells)
+  console.log('selected', cells, occupiedCells)
+  return cells[0]
 }
 
 const player = {
   className: 'player',
   cell: getRandomUnoccupiedCell(),
   show() {
-    // iteration 3
+    this.cell.classList.add(this.className)
   },
   hide() {
-    // iteration 3
+    this.cell.classList.remove(this.className)
   },
   move(direction) {
-    // iteration 3
+    this.hide()
+    this._move(direction)
+    this._detectCollisions()
+    this.show()
+  },
+  _move(direction) {
+    if (this.canMove(direction)) {
+      const nextIndex = this._newCellIndex(direction)
+      const nextCell = board.cells[nextIndex]
+      this.cell = nextCell
+    }
+  },
+  _newCellIndex(direction) {
+    const currentIndex = parseInt(this.cell.dataset.index)
+    switch (direction) {
+      case 'left':
+        return currentIndex - 1
+      case 'right':
+        return currentIndex + 1
+      case 'up':
+        return currentIndex - board.width
+      case 'down':
+        return currentIndex + board.width
+    }
   },
   canMove(direction) {
-    // hint for iteration 3: make move behaviour conditional
+    switch (direction) {
+      case 'left':
+        return this.cell.dataset.index % board.width !== 0
+      case 'right':
+        return this.cell.dataset.index % board.width !== board.width - 1
+      case 'up':
+        return Math.floor(this.cell.dataset.index / board.width) !== 0
+      case 'down':
+        return (
+          Math.floor(this.cell.dataset.index / board.width) !== board.height - 1
+        )
+    }
   },
   _detectCollisions() {
-    // iteration 4
-    // how do we detect collisions with items
-    // when do we call this?
+    const foundCollectible = collectibles.find((x) => x.cell === this.cell)
+    if (foundCollectible) {
+      console.log('FOUND IT', foundCollectible)
+      foundCollectible.collect()
+      if (collectibles.every((x) => x.isCollected)) {
+        game.win()
+      }
+    }
   },
 }
 
@@ -98,27 +163,30 @@ const game = {
   isStarted: false,
   isWon: false,
   isLost: false,
-  // iteration 5
-  winAudio: null,
+  winAudio: document.querySelector('audio#anthem'),
   win() {
-    // iteration 4
+    this.isWon = true
+    this.isStarted = false
+    this.winAudio.play()
+    inventory.clear()
+    alert('You won!')
   },
   start() {
-    // iteration 2
-    // distribute the items
-    // iteration 3
-    // show the player
-    // iteration 4
-    // reset the inventory
-    // iteration 5
-    // reset the music
+    collectibles.forEach((collectible) => collectible.hide())
+    distributeCollectibles()
+    player.show()
+    this.isStarted = true
+    this.winAudio.currentTime = 0
+    this.winAudio.pause()
   },
 }
 
 const startButton = document.querySelector('button#start')
 startButton.addEventListener('click', () => {
-  // iteration 2
-  // start the game
+  if (game.isStarted) {
+    return
+  }
+  game.start()
 })
 
 document.addEventListener('keydown', (event) => {
