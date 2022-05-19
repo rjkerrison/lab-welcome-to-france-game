@@ -95,7 +95,11 @@ Once the player has collected all of the items, the player has won and the game 
 
 When the user wins, play _La Marseillaise_ to congratulate them.
 
-## Iteration 6: Impose a time limit
+The audio file you need is provided at `audio/la-marseillaise.ogg`.
+
+The national anthem of the republic should stop when the user restarts the game.
+
+## BONUS: Impose a time limit
 
 Add a clock which counts down.
 When the clock reaches zero, the player has lost.

@@ -2,6 +2,26 @@
   box-sizing: border-box;
 }
 
+body {
+  background-color: #50719d;
+  background-image: url('https://images.unsplash.com/photo-1551866442-64e75e911c23');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 100vh;
+  width: 100vw;
+  margin: 0;
+  padding: 0;
+  color: white;
+}
+
+h1,
+h2,
+p {
+  padding: 0.5rem;
+  margin: 0;
+}
+
 header,
 main {
   display: flex;
