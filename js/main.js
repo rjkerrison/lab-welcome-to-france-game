@@ -60,20 +60,24 @@ const inventory = {
         collected++;
 
         const collectibleDiv = document.createElement(`div`);
+
         collectibleDiv.classList.add(collectible.className);
-        
+        collectibleDiv.classList.add(`inventory`);
+        collectibleDiv.classList.add(`item`);
+
         this.element.appendChild(collectibleDiv);
-        console.log(this.element, collectibleDiv);
       }
     });
 
     if (collected === collectibles.length) {
-      console.log(`won`);
       game.win();
     }
   },
   clear() {
     // iteration 3 (reset behaviour)
+    if (!this.element) {
+      this.element = document.querySelector(`.inventory`);
+    }
     this.element.innerHTML = ``;
   },
 }
@@ -116,7 +120,7 @@ function distributeCollectibles() {
 
   collectibles.forEach((collectible, index) => {
     const cell = randomlySelectedCells[index];
-    
+
     collectible.cell = cell;
     collectible.display();
   });
@@ -186,7 +190,11 @@ const player = {
     // when do we call this?
     if (this.cell.className !== `cell player`) {
       for (let i = 0; i < collectibles.length; i++) {
-        if (collectibles[i].cell.dataset.index === this.cell.dataset.index) {
+        if (
+          collectibles[i].cell.dataset.index === this.cell.dataset.index
+          &&
+          !collectibles[i].isCollected
+        ) {
           collectibles[i].collect();
           return;
         }
@@ -204,6 +212,12 @@ const game = {
   win() {
     // iteration 4
     document.getElementById(`anthem`).play();
+
+    startButton.addEventListener('click', () => {
+      // iteration 2
+      // start the game
+      game.start();
+    }, { once: true })
   },
   start() {
     // iteration 2
@@ -214,12 +228,14 @@ const game = {
     player.show();
     // iteration 4
     // reset the inventory
+    inventory.clear();
+    collectibles.forEach(c => { c.isCollected = false });
     // iteration 5
     // reset the music
-
+    document.getElementById(`anthem`).pause();
+    document.getElementById(`anthem`).currentTime = 0;
 
     this.isStarted = true;
-
   },
 }
 
@@ -228,7 +244,7 @@ startButton.addEventListener('click', () => {
   // iteration 2
   // start the game
   game.start();
-})
+}, { once: true })
 
 document.addEventListener('keydown', (event) => {
   if (!game.isStarted) {
