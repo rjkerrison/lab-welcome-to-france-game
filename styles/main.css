@@ -98,6 +98,12 @@ footer {
 .compte-bancaire {
   background-image: url('../images/compte-bancaire.png');
 }
+.apartment {
+  background-image: url('../images/apartment.png');
+}
+.job {
+  background-image: url('../images/job.png');
+}
 .player {
   background-image: url('../images/player.png');
 }

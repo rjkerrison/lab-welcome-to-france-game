@@ -60,6 +60,8 @@ const collectibles = [
   'titre-de-sejour',
   'sim-card',
   'compte-bancaire',
+  'apartment',
+  'job',
 ].map((c) => new Collectible(c))
 
 function distributeCollectibles() {

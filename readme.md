@@ -55,7 +55,7 @@ function getRandomSelection(n, array) {
 }
 ```
 
-The full list of collectibles as class names are as follows:
+The full list of collectibles as class names are provided as follows:
 
 ```js
 const collectibles = [
@@ -63,6 +63,8 @@ const collectibles = [
   'titre-de-sejour',
   'sim-card',
   'compte-bancaire',
+  'apartment',
+  'job',
 ]
 ```
 
@@ -104,3 +106,17 @@ The national anthem of the republic should stop when the user restarts the game.
 Add a clock which counts down.
 When the clock reaches zero, the player has lost.
 If the player wins before the clock hits zero, stop the clock.
+
+## BONUS: Add order rules
+
+In real life, there are a few restrictions on collecting _tous les papiers_:
+
+- It's impossible to get a bank account without first having a SIM card.
+- It's impossible to get a _titre de séjour_ (residence permit) without first having an address.
+- It's impossible to get a _carte vitale_ (health insurance card) without first having a job and an address.
+- It's impossible to get a job without first having the right to work, proven by a _titre de séjour_.
+
+Implement these rules in your `collect()` method.
+You should indicate to the user which rule is blocking them, if any.
+
+Finally, try playing the game!
