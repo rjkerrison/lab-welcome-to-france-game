@@ -161,25 +161,76 @@ const player = {
   },
 }
 
+class Timer {
+  constructor(endCallback, countdownSeconds = 120) {
+    this.startTime = null
+    this.isStarted = false
+    this.element = document.querySelector('#timer')
+    this.countdownSeconds = countdownSeconds
+    this.endCallback = endCallback
+  }
+  start() {
+    this.startTime = Date.now()
+    this.isStarted = true
+    this.display()
+  }
+  stop() {
+    this.isStarted = false
+  }
+  getRemaining() {
+    const elapsedMilliseconds = Date.now() - this.startTime
+    const remainingMilliseconds =
+      this.countdownSeconds * 1000 - elapsedMilliseconds
+
+    if (remainingMilliseconds < 0) {
+      this.stop()
+      this.endCallback()
+    }
+
+    return new Date(remainingMilliseconds)
+  }
+  display() {
+    if (!this.isStarted) {
+      return
+    }
+
+    const remaining = this.getRemaining()
+    const paddedMinutes = remaining.getMinutes().toString().padStart(2, '0')
+    const paddedSeconds = remaining.getSeconds().toString().padStart(2, '0')
+    this.element.textContent = `${paddedMinutes}:${paddedSeconds}`
+
+    requestAnimationFrame(() => this.display())
+  }
+}
+
 const game = {
   isStarted: false,
   isWon: false,
   isLost: false,
   winAudio: document.querySelector('audio#anthem'),
+  timer: new Timer(() => game.lose()),
+  lose() {
+    this.isLost = true
+    this.isStarted = false
+    this.timer.stop()
+    alert('You lost!')
+  },
   win() {
     this.isWon = true
     this.isStarted = false
     this.winAudio.play()
-    inventory.clear()
+    this.timer.stop()
     alert('You won!')
   },
   start() {
     collectibles.forEach((collectible) => collectible.hide())
     distributeCollectibles()
+    inventory.clear()
     player.show()
     this.isStarted = true
     this.winAudio.currentTime = 0
     this.winAudio.pause()
+    this.timer.start()
   },
 }
 
