@@ -52,10 +52,11 @@ const inventory = {
 }
 
 class Collectible {
-  constructor(className) {
+  constructor(className, dependencies = []) {
     this.className = className
     this.cell = null
     this.isCollected = false
+    this.dependencies = dependencies
   }
   hide() {
     if (!this.cell) {
@@ -64,6 +65,15 @@ class Collectible {
     this.cell.classList.remove(this.className)
   }
   collect() {
+    const unmatchedDependencies = this.dependencies.filter(
+      (x) => !x.isCollected
+    )
+    if (unmatchedDependencies.length) {
+      const message = unmatchedDependencies.map((x) => x.className).join(', ')
+      alert(`You must collect ${message} first!`)
+      return
+    }
+
     this.hide()
     this.cell = inventory.add()
     this.isCollected = true
@@ -82,6 +92,11 @@ const collectibles = [
   'apartment',
   'job',
 ].map((c) => new Collectible(c))
+
+collectibles[0].dependencies = [collectibles[4], collectibles[5]]
+collectibles[1].dependencies = [collectibles[4]]
+collectibles[3].dependencies = [collectibles[2]]
+collectibles[5].dependencies = [collectibles[1]]
 
 function distributeCollectibles() {
   const cells = getRandomSelection(collectibles.length, board.cells)
