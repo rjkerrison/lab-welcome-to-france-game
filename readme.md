@@ -107,6 +107,8 @@ Add a clock which counts down.
 When the clock reaches zero, the player has lost.
 If the player wins before the clock hits zero, stop the clock.
 
+![Timer Bonus Iteration](images/iteration-bonus-timer.png)
+
 ## BONUS: Add order rules
 
 In real life, there are a few restrictions on collecting _tous les papiers_:
