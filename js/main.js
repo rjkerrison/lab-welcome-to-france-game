@@ -1,5 +1,6 @@
 class GameBoard {
   constructor(width, height) {
+    // "this" refers to the current board
     this.width = width
     this.height = height
     this.element = document.querySelector('.grid')
@@ -7,7 +8,7 @@ class GameBoard {
   }
   _createCells() {
     const cells = []
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < this.width * this.height; i++) {
       const cell = document.createElement('div')
       cell.classList.add('cell')
       cell.dataset.index = i
@@ -18,6 +19,7 @@ class GameBoard {
   }
 }
 
+// here, we create a board based on the class
 const board = new GameBoard(10, 10)
 
 function fisherYatesShuffle(arr) {
