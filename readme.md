@@ -9,7 +9,7 @@ all of the required _papiers_ before time runs out.
 The images and audio have been provided for you,
 as has a starting page.
 
-See a [finished demo of the game](https://rjkerrison.co.uk/lab-welcome-to-france-game/) to understand better the task.
+See a [finished demo of the game](https://rjkerrison.github.io/lab-welcome-to-france-game/) to understand better the task.
 
 ## Iteration 1: Populate the Grid
 
